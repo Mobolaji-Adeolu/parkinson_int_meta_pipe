@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # Oct 16, 2017
 # -------------------------------------------------
-# this module looks to be responsible for splitting up the 
+# this module looks to be responsible for splitting up the dataset files
+# into something more managable
 import sys
 import os
 import os.path

@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 
+# Oct 17, 2017
+# ---------------------------------------
+# This appears to be the main file for the entire pipeline
+
 import sys
 import os
 import os.path
 import subprocess
 import multiprocessing
 
+# this part's too messy.  we can clean this up
 cdhit_dup = "/home/j/jparkins/mobolaji/Tools/CDHIT/cd-hit-v4.6.6-2016-0711/cd-hit-auxtools/cd-hit-dup"
 Timmomatic = "/home/j/jparkins/mobolaji/Tools/Trimmomatic/Trimmomatic-0.36/trimmomatic-0.36.jar"
 AdapterRemoval = "/home/j/jparkins/mobolaji/Tools/AdapterRemoval/adapterremoval-2.2.0/build/AdapterRemoval"
@@ -71,6 +76,9 @@ RPKM = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/RPKM.py"
 
 Threads = str(multiprocessing.cpu_count())
 
+# These are all different types of the same call to SciNet, using different configs
+# clean it up
+
 PBS_Submit_LowMem = """#!/bin/bash
 #PBS -l nodes=1:ppn=8,walltime=12:00:00
 #PBS -N NAME
@@ -115,11 +123,20 @@ output_folder = sys.argv[2]
 
 print "Remember to run " + Sort_Reads + " on your reads before running this pipeline."
 
+# As the pipeline says, this is not the first stage.
+# The first stage is "Sort_Reads"
+# and something to generate fastq, and also splits them
 
 for genome in sorted(os.listdir(input_folder)):
+	# one main for-loop.  Script seems to loop through all the files in a dir.
     file_list = []
     Network_list = []
     if genome.endswith("1.fastq"):
+		# this part splits the fastq file into segments.  why in such an odd way?
+		# also recall that the fastq format has artifacts we need to discard 
+		# this step could be called the "fastq cleanup"
+		# recall that there was also a claim that the program fails on sufficiently small datasets... (WTF??)
+		# I guess the important part was getting the main procedures outlined.
         genome_name = os.path.splitext(genome)[0][:-1]
         line_count = 0
         with open(os.path.join(input_folder, genome), "r") as counting_file:
@@ -131,6 +148,8 @@ for genome in sorted(os.listdir(input_folder)):
                 os.mkdir(os.path.join(input_folder, genome_name))
             except:
                 pass
+			#this kind of call forces subprocess to be sequential
+			# the real way to do parallel subprocess is subprocess.Popen(<program call>)
             subprocess.call([Python, File_splitter, "2000000", os.path.join(input_folder, genome), os.path.join(input_folder, genome_name)])
             subprocess.call([Python, File_splitter, "2000000", os.path.join(input_folder, genome_name + "2.fastq"), os.path.join(input_folder, genome_name)])
             for genome_split in os.listdir(os.path.join(input_folder, genome_name)):
