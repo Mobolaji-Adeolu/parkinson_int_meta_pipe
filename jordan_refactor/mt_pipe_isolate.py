@@ -679,7 +679,7 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
 
             if startpoint > sp['Annotate_BLAT_Post']:
                 print "...started 1",
-                JobID_Annotate_Diamond1 = subprocess.check_output(["qsub", os.path.splitext(Input_FName)[0] + "_Annotate_DMD1.pbs", "-W"])
+                JobID_Annotate_Diamond1 = subprocess.check_output(["qsub", os.path.splitext(Input_FName)[0] + "_Annotate_DMD1.pbs"])
             else:
                 print "...queued 1",
                 JobID_Annotate_Diamond1 = subprocess.check_output(["qsub", os.path.splitext(Input_FName)[0] + "_Annotate_DMD1.pbs", "-W", "depend=afterok:" + JobID_Annotate_BLAT_Post.strip("\n")])

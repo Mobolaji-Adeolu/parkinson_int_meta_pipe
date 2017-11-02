@@ -6,6 +6,13 @@
 # - fixed contig check to act on current read (not previous)
 # - fixed checking for duplicate reads to "if query in mapped_reads:"
 
+# NOTE:
+# -  Sometimes reads will be matched to multiple genes. Multiples come from:
+#    (1) BWA-alignment itself, (2) between BWA-alignement and BLAT-alignment.
+#    BLATpp doesn't allow BLAT itself to assign reads to different genes.
+#    BLATpp only takes the read<->gene match with the top score. For duplicate
+#    top scores, it only takes the one that shows up first in the initial sort.
+
 import sys
 import os
 import os.path
@@ -92,11 +99,11 @@ for x in range((len(sys.argv) - 5) / 3):
             # process only if queryID is thus far BLAT-"novel"
             # (not already recorded as BLAT-matched):
             if query in contig2read_map:    # If query is a contig (searches through keys):
-                if query in mapped_contigs: #  if it's a duplicate (w lower score than previous)
+                if query in mapped_contigs: #  if it's a duplicate (thus w lower score than previous)
                     continue                #  skip to next entry,
                 contig = True               #  or else mark as contig and continue.
             else:                           # If query isn't contig:
-                if query in mapped_reads:   #  if it's duplicate (w lower score than previous)
+                if query in mapped_reads:   #  if it's duplicate (thus w lower score than previous)
                     continue                #  skip to next entry,
                 contig = False              #  or else continue.
         
