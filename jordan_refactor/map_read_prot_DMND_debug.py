@@ -66,7 +66,14 @@ prot2read_map= {}           # dict of DMD-aligned protID<->readID(s)
 # sort function: sort by score:
 # (12th field of the .blatout file)
 def sortbyscore(line):
-    return line[11]
+    return float(line[11])
+
+count0= 0
+count1= 0
+count2= 0
+count3= 0
+count4= 0
+count5= 0
 
 # loop over remainder (after argv[5]) in sets of 3:
 # (readtypes sets: contigs, merged, unmerged1, unmerged2)
@@ -86,6 +93,13 @@ for x in range((len(sys.argv)-6)/3):
 
     # call as gene_map(.dmdout file, list of unmapped readIDs)
     def gene_map(tsv,unmapped):
+   
+        global count0
+        global count1
+        global count2
+        global count3
+        global count4
+        global count5
  
         # get info from .dmdout file:
         with open(tsv,"r") as tabfile:
@@ -104,11 +118,22 @@ for x in range((len(sys.argv)-6)/3):
         length_cutoff= 0.65
         score_cutoff= 60
         
+        print '\n\n\n' + str(tsv)
+        print 'count0= ' + str(count0)
+        print 'len(Sorted_Hits)= ' + str(len(Sorted_Hits))
+        print 'Sorted_Hits[0][0]= ' + str(Sorted_Hits[0][0]) + ', Score= ' + str(Sorted_Hits[0][11])
+        print 'Sorted_Hits[1][0]= ' + str(Sorted_Hits[1][0]) + ', Score= ' + str(Sorted_Hits[1][11])
+        print 'Sorted_Hits[-2][0]= ' + str(Sorted_Hits[-2][0]) + ', Score= ' + str(Sorted_Hits[-2][11])
+        print 'Sorted_Hits[-1][0]= ' + str(Sorted_Hits[-1][0]) + ', Score= ' + str(Sorted_Hits[-1][11])
+        
+        
         # loop through DMD-aligned reads/contigs:
         for line in Sorted_Hits:
 
             # store queryID:
             query= line[0]                  # queryID= readID/contigID
+            
+            count0+= 1
             
             # process only if queryID is thus far DMD-"novel"
             # (not already recorded as DMD-matched):
@@ -127,11 +152,28 @@ for x in range((len(sys.argv)-6)/3):
             align_len= 3*int(line[3])       # alignment length (aa->nt)
             score= float(line[11])          # score
             
+            count1+= 1
+            
             # test thresholds:
-            if seq_identity > identity_cutoff:                            # identity
-                if align_len > len(read_seqs[query].seq)*length_cutoff:   # length
-                    if score > score_cutoff:                              # score
+            if seq_identity > identity_cutoff:                                  # identity
 
+                count2+= 1
+                if count4%200 == 0:
+                    print '\nproteinID= ' + str(db_match)
+                    print 'align_len= ' + str(align_len)
+                    print 'len(read_seqs[query].seq)= ' + str(len(read_seqs[query].seq))
+                    print 'length_cutoff= ' + str(length_cutoff)
+                    print 'len(read_seqs[query].seq)*length_cutoff= ' + str(len(read_seqs[query].seq)*length_cutoff)
+                    print 'count0= ' + str(count0)
+                    print 'count1= ' + str(count1)
+                    print 'count2= ' + str(count2)
+
+                if align_len > len(read_seqs[query].seq)*length_cutoff:         # length
+                    count3+= 1
+                    if score > score_cutoff:                                    # score
+                    
+                        count4+= 1
+                
                         # RECORD alignment:
                     
                         # query aligns to protein with previous alignment(s):
@@ -168,6 +210,8 @@ for x in range((len(sys.argv)-6)/3):
                 
                         continue    # If DMD-aligned query was DMD-novel and met threshold
                                     #  (and was therefore processed), skip to next query
+                                    
+            count5+= 1
                                     
             unmapped.add(query)     # If DMD-aligned query was DMD-novel but failed threshold
                                     #  put the queryID back in the unmapped set.
@@ -242,5 +286,13 @@ with open(prot_file,"w") as out_prot:
     SeqIO.write(proteins,out_prot,"fasta")              #  and aligned proteins aa seqs.
 
 # print DMD stats:
+print '\n\n\n'
 print str(reads_count) + " reads were mapped with Diamond."
 print "Reads mapped to " + str(len(proteins)) + " proteins."
+print "count0= " + str(count0)
+print "count1= " + str(count1)
+print "count2= " + str(count2)
+print "count3= " + str(count3)
+print "count4= " + str(count4)
+print "count5= " + str(count5)
+print "JORDANsplit"

@@ -2,6 +2,7 @@
 
 # Now with some commenting!
 # CHANGES:
+# - fixed sort function to return float
 # - reversed the sort direction to get largest scores at top
 # - changed align_len to float(align_len) (to make sure it's a number)
 # - fixed contig check to act on current read (not previous)
@@ -53,7 +54,7 @@ mapped_contigs= set()       # tracks BLAT-assigned contigs
 # sort function: sort by score:
 # (12th field of the .blatout file)
 def sortbyscore(line):
-    return line[11]
+    return float(line[11])
 
 # loop over remainder (after argv[4]) in sets of 3:
 # (readtypes sets: contigs, merged, unmerged1, unmerged2)
@@ -110,14 +111,14 @@ for x in range((len(sys.argv)-5)/3):
         
             # store remaining read info:
             db_match= line[1]               # geneID
-            seq_identity= line[2]           # sequence identity
-            align_len= line[3]              # alignment length
-            score= line[11]                 # score
+            seq_identity= float(line[2])    # sequence identity
+            align_len= int(line[3])         # alignment length
+            score= float(line[11])          # score
             
             # test thresholds:
-            if float(seq_identity) > float(identity_cutoff):                    # identity
-                if float(align_len) > len(read_seqs[query].seq)*length_cutoff:  # length
-                    if float(score) > float(score_cutoff):                      # score
+            if seq_identity > identity_cutoff:                                  # identity
+                if align_len > len(read_seqs[query].seq)*length_cutoff:         # length
+                    if score > score_cutoff:                                    # score
                     
                         # RECORD alignment:
                     
