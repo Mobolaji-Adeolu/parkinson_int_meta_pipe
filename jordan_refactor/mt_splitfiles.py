@@ -16,7 +16,7 @@ Sort_Reads = "/home/j/jparkins/mobolaji/Read_Classification/Sort_Reads.py"
 
 input_folder = sys.argv[1]
 splitreads = int(sys.argv[2])
-splitreads_min = 50000
+splitreads_min = 100000
 
 print "Remember to run " + Sort_Reads + " on your reads before splitting."
 

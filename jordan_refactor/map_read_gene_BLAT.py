@@ -57,14 +57,14 @@ def sortbyscore(line):
     return float(line[11])
 
 # loop over remainder (after argv[4]) in sets of 3:
-# (readtypes sets: contigs, merged, unmerged1, unmerged2)
+# (readtype sets: contigs, merged, unmerged1, unmerged2):
 for x in range((len(sys.argv)-5)/3):
-    read_file= sys.argv[3*x+5]      # INPUT: non-BWA-aligned readIDs and seqs (.fasta)
+    read_file= sys.argv[3*x+5]      # INPUT: non-BWA-aligned contig/readIDs and seqs (.fasta)
     read_seqs= SeqIO.index(read_file, os.path.splitext(read_file)[1][1:])
-                                    # dict of non-BWA-aligned read SeqRecords: key=readID
+                                    # dict of non-BWA-aligned read SeqRecords: key=contig/readID
                                     #  (second argument specifies filetype, e.g., "fasta")
-    BLAT_tab_file= sys.argv[3*x+6]  # INPUT: BLAT-aligned readIDs (.blatout)
-    output_file= sys.argv[3*x+7]    # OUTPUT: non-BWA&BLAT-aligned readIDs and seqs (.fasta)
+    BLAT_tab_file= sys.argv[3*x+6]  # INPUT: BLAT-aligned contig/readIDs (.blatout)
+    output_file= sys.argv[3*x+7]    # OUTPUT: non-BWA&BLAT-aligned contig/readIDs and seqs (.fasta)
 
     #####################################
     # FUNCTION:
@@ -73,7 +73,7 @@ for x in range((len(sys.argv)-5)/3):
     # for duplicate matches, the read is assigned to a single gene w highest match score.
     
     # call as gene_map(.blatout file, list of unmapped readIDs)
-    def gene_map(tsv,unmapped):
+    def gene_map(tsv, unmapped):
     
         # get info from .blatout file:
         with open(tsv,"r") as tabfile:
@@ -84,8 +84,9 @@ for x in range((len(sys.argv)-5)/3):
                 else:                               #  or else
                     Hits.append(line.split("\t"))   #  append list of tab-delimited fields to Hits list.
     
-        # Sort .blatout list by high score:
-        Sorted_Hits= sorted(Hits,key=sortbyscore,reverse=True)
+        # sort .blatout list by high score:
+        Sorted_Hits= sorted(Hits, key=sortbyscore, reverse=True)
+        del Hits
 
         # BLAT threshold:
         identity_cutoff= 85
@@ -96,7 +97,7 @@ for x in range((len(sys.argv)-5)/3):
         for line in Sorted_Hits:
         
             # store queryID:
-            query= line[0]                  # queryID= readID/contigID
+            query= line[0]                  # queryID= contig/readID
             
             # process only if queryID is thus far BLAT-"novel"
             # (not already recorded as BLAT-matched):
@@ -152,39 +153,42 @@ for x in range((len(sys.argv)-5)/3):
                             elif not contig:                                    # If query is a read, then
                                 gene2read_map[db_match]= [query]                #  add its readID to aligned gene<->read dict
                                 mapped_reads.add(query)                         #  and mark it as assigned by BLAT.
+                                                                                # WHAT IF TWO PAIRED READS MATCH TO DIFFERENT GENES?
+                                                                                #  THEY WILL BE RECORDED TWICE!
                                 
                         continue    # If BLAT-aligned query was BLAT-novel and met threshold
                                     #  (and was therefore processed), skip to next query
+                                    
+            # THERE NEEDS TO BE A CHECK HERE TO SEE THAT ONE'S PAIR HASN'T BEEN MAPPED SOMEWHERE ELSE
                                     
             unmapped.add(query)     # If BLAT-aligned query was BLAT-novel but failed threshold
                                     #  put the queryID back in the unmapped set.
 
     #####################################
 
-    # for BLAT-aligned reads that
+    # for BLAT-aligned contigs/reads that
     # don't meet threshold:
-    unmapped_reads= set()           # for set of readIDs
+    unmapped_reads= set()           # for set of contig/readIDs
     unmapped_seqs= []               # for list of SeqRecords
 
     # process BLAT-aligned reads:
-    gene_map(BLAT_tab_file,unmapped_reads)
+    gene_map(BLAT_tab_file, unmapped_reads)
     #  Novel reads that meet threshold, append to gene2read_map (aligned geneID<->readID(s) dict).
-    #  readIDs of reads that never meet threshold are placed in unmapped_reads.
+    #  contig/readIDs of contigs/reads that never meet threshold are placed in unmapped_reads.
 
-    # WRITE OUTPUT: non-BWA&BLAT-aligned readIDs
+    # WRITE OUTPUT: non-BWA&BLAT-aligned contig/readIDs
     # and seqs (.fasta):
-    for read in read_seqs:                              # Take all non-BWA-aligned reads (input to BLAT)
+    for read in read_seqs:                              # Take all non-BWA-aligned contigs/reads (input to BLAT)
         if read not in unmapped_reads:                  #  that weren't already in unmapped_reads;
-            for gene in gene2read_map:                  #  and if the read was never aligned to any gene
-                if read in gene2read_map[gene]:         #  (check against all reads in each previously-aligned gene),
+            for gene in gene2read_map:                  #  and if the contig/read was never aligned to any gene
+                if read in gene2read_map[gene]:         #  (check against all contig/reads in each previously-aligned gene),
                     break
             else:
-                unmapped_reads.add(read)                #  then add its readID to unmapped_reads. (for/else loop)
-
+                unmapped_reads.add(read)                #  then add its contig/readID to unmapped_reads. (for/else loop)
     for read in unmapped_reads:                         # Put corresponding SeqRecords for unmapped_reads
         unmapped_seqs.append(read_seqs[read])           #  into unmapped_seqs
     with open(output_file,"w") as outfile:
-        SeqIO.write(unmapped_seqs,outfile,"fasta")      #  and write it to file.
+        SeqIO.write(unmapped_seqs, outfile, "fasta")    #  and write it to file.
 
 
 # WRITE OUTPUT: rewrite gene2read file to include BLAT-aligned:
@@ -192,7 +196,7 @@ for x in range((len(sys.argv)-5)/3):
 reads_count= 0
 genes= []
 with open(gene2read_file,"w") as out_map:               # Delete old gene2read_file and write a new one.
-    for record in SeqIO.parse(DNA_DB,"fasta"):          # Loop through SeqRec of all genes in DNA db:
+    for record in SeqIO.parse(DNA_DB, "fasta"):         # Loop through SeqRec of all genes in DNA db:
                                                         #  (DNA db is needed to get the sequence.)
         if record.id in gene2read_map:                  #  If DNA db gene is one of the matched genes,
             genes.append(record)                        #  append the SeqRec to genes list (for next file), and
@@ -204,8 +208,9 @@ with open(gene2read_file,"w") as out_map:               # Delete old gene2read_f
             out_map.write("\n")                         #  and a new line character.
 
 # WRITE OUTPUT: BWA&BLAT-aligned geneIDs and seqs (.fna; fasta-format):
+# (this wasn't done in BWA post-processing)
 with open(gene_file,"w") as outfile:
-    SeqIO.write(genes,outfile,"fasta")
+    SeqIO.write(genes, outfile, "fasta")
 
 # print BWA+BLAT stats:
 print str(reads_count) + " reads were mapped with BWA and BLAT."

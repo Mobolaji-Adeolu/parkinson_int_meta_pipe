@@ -8,8 +8,10 @@
 # - changed align_len to float(align_len) (to make sure it's a number)
 # - fixed contig check to act on current read (not previous)
 # - fixed checking for duplicate reads to "if query in mapped_reads:"
+# - stores aligned proteins in new dict prot2read_map, instead of gene2read_map:
+#   readability esp. during WRITE OUTPUT: BWA&BLAT&DMD-aligned;
+#   also only check new DMD alignements against protein list for duplicates
 # - fixed WRITE OUTPUT: non-BWA&BLAT&DMD-aligned: changed "mapped_reads.add" to "break"
-# - fixed WRITE OUTPUT: BWA&BLAT&DMD-aligned: changed to only write prot once
 
 # NOTE:
 # -  Sometimes reads will be matched to multiple genes. Multiples come from:
@@ -69,14 +71,14 @@ def sortbyscore(line):
     return line[11]
 
 # loop over remainder (after argv[5]) in sets of 3:
-# (readtypes sets: contigs, merged, unmerged1, unmerged2)
+# (readtype sets: contigs, merged, unmerged1, unmerged2)
 for x in range((len(sys.argv)-6)/3):
-    read_file= sys.argv[3*x+6]      # INPUT: non-BWA&BLAT-aligned readIDs and seqs (.fasta)
+    read_file= sys.argv[3*x+6]      # INPUT: non-BWA&BLAT-aligned contig/readIDs and seqs (.fasta)
     read_seqs= SeqIO.index(read_file, os.path.splitext(read_file)[1][1:])
-                                    # dict of non-BWA&BLAT-aligned read SeqRecords: key=readID
+                                    # dict of non-BWA&BLAT-aligned read SeqRecords: key=contig/readID
                                     #  (second argument specifies filetype, e.g., "fasta")
-    DMND_tab_file= sys.argv[3*x+7]  # INPUT: DMD-aligned readIDs (.dmdout)
-    output_file= sys.argv[3*x+8]    # OUTPUT: non-BWA&BLAT&DMD-aligned readIDs and seqs (.fasta)
+    DMND_tab_file= sys.argv[3*x+7]  # INPUT: DMD-aligned contig/readIDs (.dmdout)
+    output_file= sys.argv[3*x+8]    # OUTPUT: non-BWA&BLAT&DMD-aligned contig/readIDs and seqs (.fasta)
 
     #####################################
     # FUNCTION:
@@ -85,7 +87,7 @@ for x in range((len(sys.argv)-6)/3):
     # for duplicate matches, the read is assigned to a single proteing w highest match score.
 
     # call as gene_map(.dmdout file, list of unmapped readIDs)
-    def gene_map(tsv,unmapped):
+    def gene_map(tsv, unmapped):
  
         # get info from .dmdout file:
         with open(tsv,"r") as tabfile:
@@ -96,8 +98,9 @@ for x in range((len(sys.argv)-6)/3):
                 else:                               #  or else
                     Hits.append(line.split("\t"))   #  append list of tab-delimited fields to Hits list.
         
-        # Sort .dmdout list by high score:
-        Sorted_Hits= sorted(Hits,key=sortbyscore,reverse=True)
+        # sort .dmdout list by high score:
+        Sorted_Hits= sorted(Hits, key=sortbyscore, reverse=True)
+        del Hits
         
         # DMD threshold:
         identity_cutoff= 85
@@ -108,7 +111,7 @@ for x in range((len(sys.argv)-6)/3):
         for line in Sorted_Hits:
 
             # store queryID:
-            query= line[0]                  # queryID= readID/contigID
+            query= line[0]                  # queryID= contig/readID
             
             # process only if queryID is thus far DMD-"novel"
             # (not already recorded as DMD-matched):
@@ -167,37 +170,39 @@ for x in range((len(sys.argv)-6)/3):
                                 mapped_reads.add(query)                         #  and mark it as assigned by DMD.
                 
                         continue    # If DMD-aligned query was DMD-novel and met threshold
-                                    #  (and was therefore processed), skip to next query
+                                    #  (and was therefore processed), skip to next query.
+                                    
+            # THERE NEEDS TO BE A CHECK HERE TO SEE THAT NOTHING'S BEEN MAPPED SOMEWHERE ELSE                                    
                                     
             unmapped.add(query)     # If DMD-aligned query was DMD-novel but failed threshold
                                     #  put the queryID back in the unmapped set.
 
     #####################################
     
-    # for DMD-aligned reads that
+    # for DMD-aligned contigs/reads that
     # don't meet threshold:
-    unmapped_reads= set()           # for set of readIDs
+    unmapped_reads= set()           # for set of contig/readIDs
     unmapped_seqs= []               # for list of SeqRecords
 
     # process DMD-aligned reads:
-    gene_map(DMND_tab_file,unmapped_reads)
+    gene_map(DMND_tab_file, unmapped_reads)
     #  Novel reads that meet threshold, append to prot2read_map (aligned gene/protID<->readID(s) dict).
-    #  readIDs of reads that never meet threshold are placed in unmapped_reads.
+    #  contig/readIDs of contigs/reads that never meet threshold are placed in unmapped_reads.
 
-    # WRITE OUTPUT: non-BWA&BLAT&DMD-aligned readIDs
+    # WRITE OUTPUT: non-BWA&BLAT&DMD-aligned contig/readIDs
     # and seqs (.fasta)
-    for read in read_seqs:                              # Take all non-BWA&BLAT-aligned reads (input to DMD)
+    for read in read_seqs:                              # Take all non-BWA&BLAT-aligned contigs/reads (input to DMD)
         if read not in unmapped_reads:                  #  that weren't already in unmapped_reads;
-            for prot in prot2read_map:                  #  and if the read was never aligned to any protein
-                if read in prot2read_map[prot]:         #  (check against all reads in each previously-aligned protein),
+            for prot in prot2read_map:                  #  and if the contig/read was never aligned to any protein
+                if read in prot2read_map[prot]:         #  (check against all contig/reads in each previously-aligned protein),
                    break
             else:
-                unmapped_reads.add(read)                #  then add its readID to unmapped_reads. (for/else loop)
+                unmapped_reads.add(read)                #  then add its contig/readID to unmapped_reads. (for/else loop)
 
     for read in unmapped_reads:                         # Put corresponding SeqRecords for unmapped_reads
         unmapped_seqs.append(read_seqs[read])           #  into unmapped_seqs
     with open(output_file,"w") as outfile:
-        SeqIO.write(unmapped_seqs,outfile,"fasta")      #  and write it to file.
+        SeqIO.write(unmapped_seqs, outfile, "fasta")    #  and write it to file.
 
 
 # WRITE OUTPUT: rewrite gene2read file to include DMD-aligned:
@@ -211,9 +216,9 @@ with open(gene2read_file,"w") as out_map:               # Delete old gene2read_f
         out_map.write(gene + "\t" + gene_len[gene] + "\t" + str(len(gene2read_map[gene])))
                                                         #  write [aligned geneID, length (in nt), #reads],
         for read in gene2read_map[gene]:
-            out_map.write("\t" + read.strip("\n"))  #  [readIDs ...],
+            out_map.write("\t" + read.strip("\n"))      #  [readIDs ...],
         else:
-            out_map.write("\n")                     #  and a new line character.
+            out_map.write("\n")                         #  and a new line character.
 
     # write proteins:
     for record in SeqIO.parse(Prot_DB,"fasta"):         # Loop through SeqRec of all prot in PROTdb:
@@ -238,9 +243,9 @@ for gene in gene_seqs:                                  # Take each BWA&BLAT-ali
     except:
         pass
 with open(prot_file,"w") as out_prot:
-    SeqIO.write(genes_trans,out_prot,"fasta")           # Write aligned gene aa seqs
-    SeqIO.write(proteins,out_prot,"fasta")              #  and aligned proteins aa seqs.
+    SeqIO.write(genes_trans, out_prot, "fasta")         # Write aligned gene aa seqs
+    SeqIO.write(proteins, out_prot, "fasta")            #  and aligned proteins aa seqs.
 
 # print DMD stats:
-print str(reads_count) + " reads were mapped with Diamond."
+print str(reads_count) + " reads were mapped with Diamond." # This includes all the reads that make up a contig.
 print "Reads mapped to " + str(len(proteins)) + " proteins."
