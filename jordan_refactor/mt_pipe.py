@@ -52,20 +52,22 @@ Infernal = "/home/j/jparkins/mobolaji/Tools/Infernal/infernal-1.1.2-linux-intel-
 Rfam = "/home/j/jparkins/mobolaji/Databases/Rfam_rRNA.cm"
 Filter_rRNA = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Filter.py"
 Reduplicate = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Reduplicate.py"
-Map_reads_contigs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_contigs.py"
+#Map_reads_contigs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_contigs.py"
+Map_reads_contigs = "/home/j/jparkins/ang/scripts/python/map_read_contigs.py"
 Paired_Reads_Filter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Paired_Reads_Filter.py"
 #BLAT_Contaminant_Filter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/BLAT_Contaminant_Filter.py"
 BLAT_Contaminant_Filter = "/home/j/jparkins/ang/scripts/python/BLAT_contaminant_filter.py"
 #File_splitter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/File_splitter.py"
 File_splitter = "/home/j/jparkins/ang/scripts/python/file_splitter.py"
 Sort_Reads = "/home/j/jparkins/mobolaji/Read_Classification/Sort_Reads.py"
-rRNA_Split_Jobs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Split_Jobs.py"
+#rRNA_Split_Jobs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Split_Jobs.py"
+rRNA_Split_Jobs = "/home/j/jparkins/ang/scripts/python/rRNA_split_jobs.py"
 #Map_reads_gene_BWA = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_gene_BWA.py"
 Map_reads_gene_BWA = "/home/j/jparkins/ang/scripts/python/map_read_gene_BWA.py"
 #Map_reads_gene_BLAT = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_gene_BLAT.py"
 Map_reads_gene_BLAT = "/home/j/jparkins/ang/scripts/python/map_read_gene_BLAT.py"
 #Map_reads_prot_DMND = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_prot_DMND.py"
-Map_reads_prot_DMND = "/home/j/jparkins/ang/scripts/python/map_read_prot_DMND_debug.py"
+Map_reads_prot_DMND = "/home/j/jparkins/ang/scripts/python/map_read_prot_DMND.py"
 Spades = "/home/j/jparkins/mobolaji/Tools/SPAdes/SPAdes-3.9.1-Linux/bin/spades.py"
 
 EC_Annotation_Prep = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/0_Preprocess_Input.py"
@@ -327,16 +329,16 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
             print "rRNA",
             COMMANDS_rRNA = [
             # FILE SPLITTING FOR rRNA REMOVAL:
-            "mkdir -p " + os.path.splitext(Input_FName)[0] + "_unpaired_n_contaminants",
+            "mkdir -p " + os.path.join(Input_Path, os.path.splitext(Input_FName)[0]) + "_unpaired_n_contaminants",
             Python + " " + File_splitter + " " + "10000" + " " + "1" + " " + Input_Filepath + "_unpaired_n_contaminants.fastq" + " " + os.path.splitext(Input_FName)[0] + "_unpaired_n_contaminants",
-            "mkdir -p " + os.path.splitext(Input_FName)[0] + "_paired_n_contaminants",
+            "mkdir -p " + os.path.join(Input_Path, os.path.splitext(Input_FName)[0]) + "_paired_n_contaminants",
             Python + " " + File_splitter + " " + "10000" + " " + "1" + " " + Input_File1 + "_paired_n_contaminants.fastq" + " " + os.path.splitext(Input_FName)[0] + "_paired_n_contaminants",
-            Python + " " + File_splitter + " " + "10000" + " " + "1" + " " + Input_File2 + "_paired_n_contaminants.fastq" + " " + os.path.splitext(Input_FName)[0] + "_paired_n_contaminants"
+            Python + " " + File_splitter + " " + "10000" + " " + "1" + " " + Input_File2 + "_paired_n_contaminants.fastq" + " " + os.path.splitext(Input_FName)[0] + "_paired_n_contaminants",
             # INFERNAL ON SPLITFILES:
             # (python script submits a new, quick-running, job for each rRNA splitfile)
-            "JOBS=$(" + Python + " " + rRNA_Split_Jobs + " " + Input_File + " " + JobID_Pre.strip("\n") + ");" + "qalter -W depend=afterok:$JOBS $JOB2"
+            "JOBS=$(" + Python + " " + rRNA_Split_Jobs + " " + Input_File + ");" + "qalter -W depend=afterok:$JOBS $JOB2"
             ]
-
+            
             with open(os.path.splitext(Input_FName)[0] + "_rRNA_Submit.pbs", "w") as PBS_script_out:
                 for line in PBS_Submit_LowMem.splitlines():
                     if "NAME" in line:

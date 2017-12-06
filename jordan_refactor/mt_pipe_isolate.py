@@ -54,14 +54,16 @@ Infernal = "/home/j/jparkins/mobolaji/Tools/Infernal/infernal-1.1.2-linux-intel-
 Rfam = "/home/j/jparkins/mobolaji/Databases/Rfam_rRNA.cm"
 Filter_rRNA = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Filter.py"
 Reduplicate = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Reduplicate.py"
-Map_reads_contigs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_contigs.py"
+#Map_reads_contigs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_contigs.py"
+Map_reads_contigs = "/home/j/jparkins/ang/scripts/python/map_read_contigs.py"
 Paired_Reads_Filter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Paired_Reads_Filter.py"
 #BLAT_Contaminant_Filter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/BLAT_Contaminant_Filter.py"
 BLAT_Contaminant_Filter = "/home/j/jparkins/ang/scripts/python/BLAT_contaminant_filter.py"
 #File_splitter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/File_splitter.py"
 File_splitter = "/home/j/jparkins/ang/scripts/python/file_splitter.py"
 Sort_Reads = "/home/j/jparkins/mobolaji/Read_Classification/Sort_Reads.py"
-rRNA_Split_Jobs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Split_Jobs.py"
+#rRNA_Split_Jobs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Split_Jobs.py"
+rRNA_Split_Jobs = "/home/j/jparkins/ang/scripts/python/rRNA_isolate_split_jobs.py"
 #Map_reads_gene_BWA = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_gene_BWA.py"
 Map_reads_gene_BWA = "/home/j/jparkins/ang/scripts/python/map_read_gene_BWA.py"
 #Map_reads_gene_BLAT = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_gene_BLAT.py"
@@ -330,7 +332,6 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
         # **** Preprocessing: Isolate Taxa
         if startpoint <= sp['Isolate'] and endpoint >= sp['Isolate']
 
-
             print "Isolate Taxa",
             COMMANDS_Isolate = [
             # FIND & SEPARATE TAXA ALIGNMENTS (BWA):
@@ -377,14 +378,14 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
             print "rRNA",
             COMMANDS_rRNA = [
             # FILE SPLITTING FOR rRNA REMOVAL:
-            "mkdir -p " + os.path.splitext(Input_FName)[0] + "_unpaired_isolate",
+            "mkdir -p " + os.path.join(Input_Path, os.path.splitext(Input_FName)[0]) + "_unpaired_isolate",
             Python + " " + File_splitter + " " + "10000" + " " + "1" + " " + Input_Filepath + "_unpaired_isolate.fastq" + " " + os.path.splitext(Input_FName)[0] + "_unpaired_n_contaminants",
-            "mkdir -p " + os.path.splitext(Input_FName)[0] + "_paired_isolate",
+            "mkdir -p " + os.path.join(Input_Path, os.path.splitext(Input_FName)[0]) + "_paired_isolate",
             Python + " " + File_splitter + " " + "10000" + " " + "1" + " " + Input_File1 + "_paired_isolate.fastq" + " " + os.path.splitext(Input_FName)[0] + "_paired_isolate",
             Python + " " + File_splitter + " " + "10000" + " " + "1" + " " + Input_File2 + "_paired_isolate.fastq" + " " + os.path.splitext(Input_FName)[0] + "_paired_isolate"
             # INFERNAL ON SPLITFILES:
             # (python script submits a new, quick-running, job for each rRNA splitfile)
-            "JOBS=$(" + Python + " " + rRNA_Isolate_Split_Jobs + " " + Input_File + " " + JobID_Pre.strip("\n") + ");" + "qalter -W depend=afterok:$JOBS $JOB2"
+            "JOBS=$(" + Python + " " + rRNA_Isolate_Split_Jobs + " " + Input_File + ");" + "qalter -W depend=afterok:$JOBS $JOB2"
             ]
 
             with open(os.path.splitext(Input_FName)[0] + "_rRNA_Submit.pbs", "w") as PBS_script_out:
