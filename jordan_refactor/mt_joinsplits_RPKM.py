@@ -142,9 +142,13 @@ if len(pbs_exists) > 0:
         print name[:-1]
     sys.exit()
 
+print 'Joining splits for:'
+
 # create Join.pbs scripts:
 for input_file in genome_join:
     Input_Filepath = os.path.join(output_folder, input_file)
+    
+    print str(input_file) + ' ...started'
     
     # join commands:
     COMMANDS_Join = [

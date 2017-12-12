@@ -71,7 +71,8 @@ Map_reads_prot_DMND = "/home/j/jparkins/ang/scripts/python/map_read_prot_DMND.py
 Spades = "/home/j/jparkins/mobolaji/Tools/SPAdes/SPAdes-3.9.1-Linux/bin/spades.py"
 
 EC_Annotation_Prep = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/0_Preprocess_Input.py"
-Detect_Submit = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/1-1a_Detect_Submission.py"
+#Detect_Submit = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/1-1a_Detect_Submission.py"
+Detect_Submit = "/home/j/jparkins/ang/scripts/python/detect_submission.py"
 EC_Annotation_Post = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/4a_EC_Consolidation.py"
 Detect = "/home/j/jparkins/mobolaji/Tools/UpdatedDETECT_V2.0/detect_leon.py"
 Priam = "/home/j/jparkins/mobolaji/Tools/PRIAM/PRIAM_search.jar"
@@ -810,7 +811,7 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
 
             print "Detect",
             COMMANDS_Detect = [
-            "JOBS=$(" + Python + " " + Detect_Submit + " " + EC_Split + " " + EC_Output + " " + Threads + " " + JobID_EC_Preprocess.strip("\n") + ");" + "qalter -W depend=afterok:$JOBS $JOB2"
+            "JOBS=$(" + Python + " " + Detect_Submit + " " + EC_Split + " " + EC_Output + " " + Threads + ");" + "qalter -W depend=afterok:$JOBS $JOB2"
             ]
 
             with open(os.path.splitext(Input_FName)[0] + "_Detect.pbs", "w") as PBS_script_out:
