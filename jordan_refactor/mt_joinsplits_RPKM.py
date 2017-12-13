@@ -154,12 +154,18 @@ for input_file in genome_join:
     COMMANDS_Join = [
     # JOIN WEVOTE TAXA OUTPUTS:
     "cat " + Input_Filepath + "*/*_WEVOTEOut.tsv" + " > " + Input_Filepath + "_WEVOTEOut.tsv",
-    # RECLASSIFY TO FAMILY LEVEL DEPTH:
-    Python + " " + Contrain_classification + " " + "family" + " " + Input_Filepath + "_WEVOTEOut.tsv" + " " + Nodes + " " + Names + " " + Input_Filepath + "_WEVOTEOut_family.tsv",
-    # GENERATE HIERARCHICAL MULTI-LAYER PIE CHART OF FAMILY COMPOSITION:    
-    Kaiju2krona + " -t " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/nodes_nr.dmp" + " -n " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/names_nr.dmp" + " -i " + Input_Filepath + "_WEVOTEOut_family.tsv" + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.txt",
-    "awk -F \'\\t\' \'{OFS=\"\\t\";$2=\"\";$3=\"\";print}\' " + Input_Filepath + "_WEVOTEOut_family_Krona.txt" + " > " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv",
-    ktImportText + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.html" + " " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv",
+#    # RECLASSIFY TO FAMILY LEVEL DEPTH:
+#    Python + " " + Contrain_classification + " " + "family" + " " + Input_Filepath + "_WEVOTEOut.tsv" + " " + Nodes + " " + Names + " " + Input_Filepath + "_WEVOTEOut_family.tsv",
+#    # GENERATE HIERARCHICAL MULTI-LAYER PIE CHART OF FAMILY COMPOSITION:    
+#    Kaiju2krona + " -t " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/nodes_nr.dmp" + " -n " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/names_nr.dmp" + " -i " + Input_Filepath + "_WEVOTEOut_family.tsv" + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.txt",
+#    "awk -F \'\\t\' \'{OFS=\"\\t\";$2=\"\";$3=\"\";print}\' " + Input_Filepath + "_WEVOTEOut_family_Krona.txt" + " > " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv",
+#    ktImportText + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.html" + " " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv",
+    # RECLASSIFY TO SPECIES LEVEL DEPTH:
+    Python + " " + Contrain_classification + " " + "species" + " " + Input_Filepath + "_WEVOTEOut.tsv" + " " + Nodes + " " + Names + " " + Input_Filepath + "_WEVOTEOut_species.tsv",
+    # GENERATE HIERARCHICAL MULTI-LAYER PIE CHART OF SPECIES COMPOSITION:
+    Kaiju2krona + " -t " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/nodes_nr.dmp" + " -n " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/names_nr.dmp" + " -i " + Input_Filepath + "_WEVOTEOut_species.tsv" + " -o " + Input_Filepath + "_WEVOTEOut_species_Krona.txt",
+    "awk -F \'\\t\' \'{OFS=\"\\t\";$2=\"\";$3=\"\";print}\' " + Input_Filepath + "_WEVOTEOut_species_Krona.txt" + " > " + Input_Filepath + "_WEVOTEOut_species_Krona.tsv",
+    ktImportText + " -o " + Input_Filepath + "_WEVOTEOut_species_Krona.html" + " " + Input_Filepath + "_WEVOTEOut_species_Krona.tsv",
     # JOIN ANNOTATED GENES/PROTEINS:
     "cat " + Input_Filepath + "*/*_gene_map.tsv" + " > " + Input_Filepath + "_gene_map.tsv",
     # JOIN ANNOTATED ECs: 

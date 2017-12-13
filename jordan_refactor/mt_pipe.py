@@ -698,10 +698,10 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
                     PBS_script_out.write(line + "\n")
 
             if startpoint > sp['Annotate_BLAT_Post']: 
-                print "...started"
+                print "...started 4"
                 JobID_Annotate_Diamond4 = subprocess.check_output(["qsub", os.path.splitext(Input_FName)[0] + "_Annotate_DMD4.pbs"])
             else:
-                print "...queued"
+                print "...queued 4"
                 JobID_Annotate_Diamond4 = subprocess.check_output(["qsub", os.path.splitext(Input_FName)[0] + "_Annotate_DMD4.pbs", "-W", "depend=afterok:" + JobID_Annotate_BLAT_Post.strip("\n")])
 
         # **** Protein Annotation Diamond Postprocess
@@ -744,10 +744,10 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
             Centrifuge + " -x " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/nt" + " -1 " + Input_File1 + "_all_mRNA_unmapped.fastq" + " -2 " + Input_File2 + "_all_mRNA_unmapped.fastq" + " -U " + Input_Filepath + "_all_mRNA_unpaired_unmapped.fastq" + " --exclude-taxids 2759 --tab-fmt-cols " + "score,readID,taxID" + " --phred" + Qual + " -p " + Threads + " -S " + Input_Filepath + "_unmapped_CentrifugeOut.tsv" + " --report-file " + Input_Filepath + "_unmapped_CentrifugeReport.txt",
             Centrifuge + " -f -x " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/nt" + " -U " + Contigs + " --exclude-taxids 2759 --tab-fmt-cols " + "score,readID,taxID" + " --phred" + Qual + " -p " + Threads + " -S " + Input_Filepath + "_contigs_CentrifugeOut.tsv" + " --report-file " + Input_Filepath + "_contigs_CentrifugeReport.txt",
             "cat " + Input_Filepath + "_unmapped_CentrifugeOut.tsv" + " " + Input_Filepath + "_contigs_CentrifugeOut.tsv" + " > " + Input_Filepath + "_CentrifugeOut.tsv",
-            # kSLAM CLASSIFICATION:
-            # kSLAM + " " + "--db=/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/" + " " + "--output-file=" + Input_Filepath + "_unpaired_kSLAMOut" + " " + Input_Filepath + "_all_mRNA_unpaired_unmapped.fastq",
-            # kSLAM + " " + "--db=/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/" + " " + "--output-file=" + Input_Filepath + "_paired_kSLAMOut" + " " + Input_File1 + "_all_mRNA_unmapped.fastq" + " " + Input_File2 + "_all_mRNA_unmapped.fastq",
-            # "sed \'s/^.*/C\\t&/\' " + Input_Filepath + "_unpaired_kSLAMOut_PerRead" + " " + Input_Filepath + "_paired_kSLAMOut_PerRead" + " > " + Input_Filepath + "_kSLAMOut.tsv",
+#            # kSLAM CLASSIFICATION:
+#            kSLAM + " " + "--db=/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/" + " " + "--output-file=" + Input_Filepath + "_unpaired_kSLAMOut" + " " + Input_Filepath + "_all_mRNA_unpaired_unmapped.fastq",
+#            kSLAM + " " + "--db=/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/" + " " + "--output-file=" + Input_Filepath + "_paired_kSLAMOut" + " " + Input_File1 + "_all_mRNA_unmapped.fastq" + " " + Input_File2 + "_all_mRNA_unmapped.fastq",
+#            "sed \'s/^.*/C\\t&/\' " + Input_Filepath + "_unpaired_kSLAMOut_PerRead" + " " + Input_Filepath + "_paired_kSLAMOut_PerRead" + " > " + Input_Filepath + "_kSLAMOut.tsv",
             # COMBINE CLASSIFICATION METHODS, USE WEVOTE TO GENERATE CONSENSUS:
             Python + " " + Classification_combine + " " + Input_Filepath + "_contig_map.tsv" + " " + Input_Filepath + "_WEVOTEOut_ensemble.csv" + " " + Input_Filepath + "_TaxIDOut.tsv" + " " + Input_Filepath + "_KaijuOut.tsv" + " " + Input_Filepath + "_CentrifugeOut.tsv",# + " " + Input_Filepath + "_kSLAMOut.tsv",
             "mkdir -p " + Input_Filepath + "_WEVOTEOut",
@@ -756,12 +756,18 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
             WEVOTE + " -o " + Input_Filepath + "_WEVOTEOut" + " --db " + WEVOTEDB + " -c",
             "cd $PBS_O_WORKDIR",
             "awk -F \'\\t\' \'{print \"C\\t\"$1\"\\t\"$9}\' " + os.path.join(Input_Filepath + "_WEVOTEOut", os.path.splitext(Input_FName)[0] + "_WEVOTEOut_WEVOTE_Details.txt") + " > " + Input_Filepath + "_WEVOTEOut.tsv",
-            # RECLASSIFY TO FAMILY LEVEL DEPTH:
-            Python + " " + Contrain_classification + " " + "family" + " " + Input_Filepath + "_WEVOTEOut.tsv" + " " + Nodes + " " + Names + " " + Input_Filepath + "_WEVOTEOut_family.tsv",
-            # GENERATE HIERARCHICAL MULTI-LAYER PIE CHART OF FAMILY COMPOSITION:  
-            Kaiju2krona + " -t " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/nodes_nr.dmp" + " -n " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/names_nr.dmp" + " -i " + Input_Filepath + "_WEVOTEOut_family.tsv" + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.txt",
-            "awk -F \'\\t\' \'{OFS=\"\\t\";$2=\"\";$3=\"\";print}\' " + Input_Filepath + "_WEVOTEOut_family_Krona.txt" + " > " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv",
-            ktImportText + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.html" + " " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv"
+#            # RECLASSIFY TO FAMILY LEVEL DEPTH:
+#            Python + " " + Contrain_classification + " " + "family" + " " + Input_Filepath + "_WEVOTEOut.tsv" + " " + Nodes + " " + Names + " " + Input_Filepath + "_WEVOTEOut_family.tsv",
+#            # GENERATE HIERARCHICAL MULTI-LAYER PIE CHART OF FAMILY COMPOSITION:  
+#            Kaiju2krona + " -t " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/nodes_nr.dmp" + " -n " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/names_nr.dmp" + " -i " + Input_Filepath + "_WEVOTEOut_family.tsv" + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.txt",
+#            "awk -F \'\\t\' \'{OFS=\"\\t\";$2=\"\";$3=\"\";print}\' " + Input_Filepath + "_WEVOTEOut_family_Krona.txt" + " > " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv",
+#            ktImportText + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.html" + " " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv"
+            # RECLASSIFY TO SPECIES LEVEL DEPTH:
+            Python + " " + Contrain_classification + " " + "species" + " " + Input_Filepath + "_WEVOTEOut.tsv" + " " + Nodes + " " + Names + " " + Input_Filepath + "_WEVOTEOut_species.tsv",
+            # GENERATE HIERARCHICAL MULTI-LAYER PIE CHART OF SPECIES COMPOSITION:
+            Kaiju2krona + " -t " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/nodes_nr.dmp" + " -n " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/names_nr.dmp" + " -i " + Input_Filepath + "_WEVOTEOut_species.tsv" + " -o " + Input_Filepath + "_WEVOTEOut_species_Krona.txt",
+            "awk -F \'\\t\' \'{OFS=\"\\t\";$2=\"\";$3=\"\";print}\' " + Input_Filepath + "_WEVOTEOut_species_Krona.txt" + " > " + Input_Filepath + "_WEVOTEOut_species_Krona.tsv",
+            ktImportText + " -o " + Input_Filepath + "_WEVOTEOut_species_Krona.html" + " " + Input_Filepath + "_WEVOTEOut_species_Krona.tsv"
             ]
 
             with open(os.path.splitext(Input_FName)[0] + "_Classify.pbs", "w") as PBS_script_out:
