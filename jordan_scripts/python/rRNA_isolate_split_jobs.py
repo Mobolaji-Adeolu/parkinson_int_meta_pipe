@@ -3,6 +3,8 @@
 # CHANGES:
 # - changed filenames to use isolated .fastq files
 # - removed JobID1 = sys.argv[2]
+# - shortened PBS submission time
+
 
 import sys
 import os
@@ -20,8 +22,8 @@ Input_FName = os.path.basename(Input_File)
 Python = "/scinet/gpc/tools/Python/Python272-shared/bin/python"
 Filter_rRNA = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Filter.py"
 
-PBS_Submit_LowMem = """#!/bin/bash
-#PBS -l nodes=1:ppn=8,walltime=6:00:00
+PBS_Submit = """#!/bin/bash
+#PBS -l nodes=1:ppn=8,walltime=00:15:00
 #PBS -N NAME
 
 module load gcc intel/15.0.2 openmpi java blast extras python
@@ -41,7 +43,7 @@ for split in sorted(os.listdir(os.path.join(Input_Path, os.path.splitext(Input_F
         COMMANDSx = [Python + " " + Filter_rRNA + " " + Split_File + ".fastq" + " " + Split_File + "_mRNA.fastq" + " " + Split_File + "_rRNA.fastq"]
 
         with open(os.path.join(Input_Path, os.path.splitext(Input_FName)[0] + "_unpaired_isolate", os.path.splitext(split)[0] + "_rRNA_Filter.pbs"), "w") as PBS_script_out:
-            for line in PBS_Submit_LowMem.splitlines():
+            for line in PBS_Submit.splitlines():
                 if "NAME" in line:
                     line = line.replace("NAME", os.path.splitext(split)[0] + "_rRNA_Filter")
                 if "COMMANDS" in line:
@@ -59,7 +61,7 @@ for split in sorted(os.listdir(os.path.join(Input_Path, os.path.splitext(Input_F
         COMMANDSy = [Python + " " + Filter_rRNA + " " + Split_File1 + " " + os.path.splitext(Split_File1)[0] + "_mRNA.fastq" + " " + os.path.splitext(Split_File1)[0] + "_rRNA.fastq" + " " + Split_File2 + " " + os.path.splitext(Split_File2)[0] + "_mRNA.fastq" + " " + os.path.splitext(Split_File2)[0] + "_rRNA.fastq"]
 
         with open(os.path.join(Input_Path, os.path.splitext(Input_FName)[0] + "_paired_isolate", os.path.splitext(split)[0] + "_rRNA_Filter.pbs"), "w") as PBS_script_out:
-            for line in PBS_Submit_LowMem.splitlines():
+            for line in PBS_Submit.splitlines():
                 if "NAME" in line:
                     line = line.replace("NAME", os.path.splitext(split)[0] + "_rRNA_Filter")
                 if "COMMANDS" in line:

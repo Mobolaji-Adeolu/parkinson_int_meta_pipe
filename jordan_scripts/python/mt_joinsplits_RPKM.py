@@ -74,39 +74,14 @@ RPKM = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/RPKM.py"
 
 Threads = str(multiprocessing.cpu_count())
 
-PBS_Submit_LowMem = """#!/bin/bash
-#PBS -l nodes=1:ppn=8,walltime=12:00:00
+PBS_Submit = """#!/bin/bash
+#PBS -l nodes=1:ppn=8
+#PBS -l WALLTIME
 #PBS -N NAME
 
 module load gcc/5.2.0 boost/1.60.0-gcc5.2.0 intel/15.0.2 openmpi java blast extras python
 cd $PBS_O_WORKDIR
 export OMP_NUM_THREADS=8
-OLDPATH=$PATH:/home/j/jparkins/ctorma/emboss/bin/:/home/j/jparkins/mobolaji/Tools/Barrnap/bin/:/home/j/jparkins/mobolaji/Tools/HMMer/hmmer-3.1b2-linux-intel-x86_64/binaries/:/home/j/jparkins/mobolaji/Tools/Python27/Python-2.7.12/:/home/j/jparkins/mobolaji/Tools/Bowtie2/bowtie2-2.3.0/:/home/j/jparkins/mobolaji/Tools/SAMTOOLS/samtools-1.3.1/
-NEWPATH=/home/j/jparkins/mobolaji/:$OLDPATH
-export PATH=$NEWPATH
-
-COMMANDS"""
-
-PBS_Submit_HighMem = """#!/bin/bash
-#PBS -l nodes=1:m64g:ppn=16,walltime=12:00:00 -q sandy
-#PBS -N NAME
-
-module load gcc/5.2.0 boost/1.60.0-gcc5.2.0 intel/15.0.2 openmpi java blast extras python
-cd $PBS_O_WORKDIR
-export OMP_NUM_THREADS=16
-OLDPATH=$PATH:/home/j/jparkins/ctorma/emboss/bin/:/home/j/jparkins/mobolaji/Tools/Barrnap/bin/:/home/j/jparkins/mobolaji/Tools/HMMer/hmmer-3.1b2-linux-intel-x86_64/binaries/:/home/j/jparkins/mobolaji/Tools/Python27/Python-2.7.12/:/home/j/jparkins/mobolaji/Tools/Bowtie2/bowtie2-2.3.0/:/home/j/jparkins/mobolaji/Tools/SAMTOOLS/samtools-1.3.1/
-NEWPATH=/home/j/jparkins/mobolaji/:$OLDPATH
-export PATH=$NEWPATH
-
-COMMANDS"""
-
-PBS_Submit_vHighMem = """#!/bin/bash
-#PBS -l nodes=1:m128g:ppn=16,walltime=1:00:00 -q sandy
-#PBS -N NAME
-
-module load gcc/5.2.0 boost/1.60.0-gcc5.2.0 intel/15.0.2 openmpi java blast extras python
-cd $PBS_O_WORKDIR
-export OMP_NUM_THREADS=20
 OLDPATH=$PATH:/home/j/jparkins/ctorma/emboss/bin/:/home/j/jparkins/mobolaji/Tools/Barrnap/bin/:/home/j/jparkins/mobolaji/Tools/HMMer/hmmer-3.1b2-linux-intel-x86_64/binaries/:/home/j/jparkins/mobolaji/Tools/Python27/Python-2.7.12/:/home/j/jparkins/mobolaji/Tools/Bowtie2/bowtie2-2.3.0/:/home/j/jparkins/mobolaji/Tools/SAMTOOLS/samtools-1.3.1/
 NEWPATH=/home/j/jparkins/mobolaji/:$OLDPATH
 export PATH=$NEWPATH
@@ -177,7 +152,9 @@ for input_file in genome_join:
 
     # write script:
     with open(os.path.splitext(os.path.basename(Input_Filepath))[0] + "_Join.pbs", "w") as PBS_script_out:
-        for line in PBS_Submit_LowMem.splitlines():
+        for line in PBS_Submit.splitlines():
+            if "WALLTIME" in line:
+                        line = line.replace("WALLTIME", "walltime=12:00:00")
             if "NAME" in line:
                 line = line.replace("NAME", os.path.splitext(os.path.basename(Input_Filepath))[0] + "_Join")
             if "COMMANDS" in line:

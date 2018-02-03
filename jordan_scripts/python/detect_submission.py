@@ -2,6 +2,7 @@
 
 # CHANGES:
 # - removed JobID = sys.argv[4]
+# - shortened PBS submission time
 
 import sys
 import os
@@ -15,11 +16,12 @@ Input_Path = sys.argv[1]
 Output_Path = sys.argv[2]
 Threads = sys.argv[3]
 
-Python = "/home/j/jparkins/mobolaji/python"
+#Python = "/home/j/jparkins/mobolaji/python"
+Python = "/scinet/gpc/tools/Python/Python272-shared/bin/python"
 Detect = "/home/j/jparkins/mobolaji/Tools/UpdatedDETECT_V2.0/detect_leon.py"
 
-PBS_Submit_LowMem = """#!/bin/bash
-#PBS -l nodes=1:ppn=8,walltime=48:00:00
+PBS_Submit = """#!/bin/bash
+#PBS -l nodes=1:ppn=8,walltime=12:00:00
 #PBS -N NAME
 
 module load gcc intel/15.0.2 openmpi java blast extras python
@@ -45,7 +47,7 @@ for split in sorted(os.listdir(Input_Path)):
         ]
 
         with open(os.path.join(Input_Path, Split_Name + "_Detect_split.pbs"), "w") as PBS_script_out:
-            for line in PBS_Submit_LowMem.splitlines():
+            for line in PBS_Submit.splitlines():
                 if "NAME" in line:
                     line = line.replace("NAME", Split_Name + "_Detect_split")
                 if "COMMANDS" in line:

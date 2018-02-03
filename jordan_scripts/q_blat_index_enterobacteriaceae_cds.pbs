@@ -1,0 +1,8 @@
+#!/bin/bash
+#PBS -l nodes=1:m64g:ppn=16,walltime=8:00:00 -q sandy
+#PBS -N BLAT_index_enterobacteriaceae_cds
+
+MAKEBLASTDB=/home/j/jparkins/mobolaji/Tools/BLAST+/ncbi-blast-2.5.0+/bin/makeblastdb
+
+cd /scratch/j/jparkins/ang/databases/enterobacteriaceae_cds
+$MAKEBLASTDB -in enterobacteriaceae_cds.fna -dbtype nucl

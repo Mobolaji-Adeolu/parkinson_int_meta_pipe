@@ -1,0 +1,8 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=8,walltime=1:00:00
+#PBS -N BLAT_index_escherichia_coli_nissle_1917_cds
+
+MAKEBLASTDB=/home/j/jparkins/mobolaji/Tools/BLAST+/ncbi-blast-2.5.0+/bin/makeblastdb
+
+cd /scratch/j/jparkins/ang/databases/escherichia_coli_nissle_1917_cds
+$MAKEBLASTDB -in escherichia_coli_nissle_1917_cds.fna -dbtype nucl
