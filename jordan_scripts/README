@@ -1,0 +1,4 @@
+How to use Jordan's version of the pipeline. Everything can be run on SCINET from the /home/j/jparkins/ang/scripts folder. This folder is a copy of the jordan_scripts/ folder in the feature/jordan_logic_fix branch of the GitHub parkinson_int_meta_pipe repository. 
+
+
+(1) Sort raw reads by editing and executing sr_mt_sortreads.sh. 
