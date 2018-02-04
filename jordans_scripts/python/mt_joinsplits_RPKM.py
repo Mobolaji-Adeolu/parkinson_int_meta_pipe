@@ -17,7 +17,8 @@ UniVec_Core = "/home/j/jparkins/mobolaji/Databases/UniVec_Core.fasta"
 Flash = "/home/j/jparkins/mobolaji/Tools/Flash/FLASH-1.2.11/flash"
 Perl = "/home/j/jparkins/mobolaji/perl"
 Perl_Script_Dir = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Xuejian"
-Python = "/home/j/jparkins/mobolaji/python"
+#Python = "/home/j/jparkins/mobolaji/python"
+Python = "/scinet/gpc/tools/Python/Python272-shared/bin/python"
 BWA = "/home/j/jparkins/mobolaji/Tools/BWA/bwa-0.7.5a/bwa"
 SAMTOOLS = "/home/j/jparkins/mobolaji/Tools/SAMTOOLS/samtools-1.3.1/samtools"
 BLAT = "/home/j/jparkins/mobolaji/Tools/pBLAT/pblat/pblat"
@@ -36,25 +37,32 @@ Infernal = "/home/j/jparkins/mobolaji/Tools/Infernal/infernal-1.1.2-linux-intel-
 Rfam = "/home/j/jparkins/mobolaji/Databases/Rfam_rRNA.cm"
 Filter_rRNA = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Filter.py"
 Reduplicate = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Reduplicate.py"
-Map_reads_contigs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_contigs.py"
+#Map_reads_contigs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_contigs.py"
+Map_reads_contigs = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/map_read_contigs.py"
 Paired_Reads_Filter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Paired_Reads_Filter.py"
-BLAT_Contaminant_Filter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/BLAT_Contaminant_Filter.py"
-File_splitter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/File_splitter.py"
-Sort_Reads = "/home/j/jparkins/mobolaji/Read_Classification/Sort_Reads.py"
-rRNA_Split_Jobs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Split_Jobs.py"
-Map_reads_gene_BWA = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_gene_BWA.py"
-Map_reads_gene_BLAT = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_gene_BLAT.py"
-Map_reads_prot_DMND = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_prot_DMND.py"
+#BLAT_Contaminant_Filter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/BLAT_Contaminant_Filter.py"
+BLAT_Contaminant_Filter = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/BLAT_contaminant_filter.py"
+#File_splitter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/File_splitter.py"
+File_splitter = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/file_splitter.py"
+Sort_Reads = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/mt_sortreads.py"
+# Sort_Reads = "/home/j/jparkins/mobolaji/Read_Classification/Sort_Reads.py"
+#rRNA_Split_Jobs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Split_Jobs.py"
+rRNA_Split_Jobs = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/rRNA_split_jobs.py"
+#Map_reads_gene_BWA = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_gene_BWA.py"
+Map_reads_gene_BWA = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/map_read_gene_BWA.py"
+#Map_reads_gene_BLAT = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_gene_BLAT.py"
+Map_reads_gene_BLAT = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/map_read_gene_BLAT.py"
+#Map_reads_prot_DMND = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_prot_DMND.py"
+Map_reads_prot_DMND = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/map_read_prot_DMND.py"
 Spades = "/home/j/jparkins/mobolaji/Tools/SPAdes/SPAdes-3.9.1-Linux/bin/spades.py"
-
 EC_Annotation_Prep = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/0_Preprocess_Input.py"
-Detect_Submit = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/1-1a_Detect_Submission.py"
+#Detect_Submit = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/1-1a_Detect_Submission.py"
+Detect_Submit = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/detect_submission.py"
 EC_Annotation_Post = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/4a_EC_Consolidation.py"
 Detect = "/home/j/jparkins/mobolaji/Tools/UpdatedDETECT_V2.0/detect_leon.py"
 Priam = "/home/j/jparkins/mobolaji/Tools/PRIAM/PRIAM_search.jar"
 BLAST_dir = "/home/j/jparkins/mobolaji/Tools/BLAST/blast-2.2.26/bin/"
 SWISS_PROT = "/home/j/jparkins/mobolaji/Databases/uniprot_sprot_annotated.fasta"
-
 Nodes = "/home/j/jparkins/mobolaji/Databases/taxdump/nodes.dmp"
 Names = "/home/j/jparkins/mobolaji/Databases/taxdump/names.dmp"
 Annotated_taxid = "/home/j/jparkins/mobolaji/Read_Classification/Get_TaxID.py"
@@ -69,7 +77,6 @@ ktImportText = "/home/j/jparkins/mobolaji/Tools/Krona/KronaTools-2.7/bin/ktImpor
 Centrifuge = "/home/j/jparkins/mobolaji/Tools/Centrifuge/centrifuge/centrifuge"
 Centrifuge_report = "/home/j/jparkins/mobolaji/Tools/Centrifuge/centrifuge/centrifuge-kreport"
 kSLAM = "/home/j/jparkins/mobolaji/Tools/k-SLAM/k-SLAM/SLAM"
-
 RPKM = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/RPKM.py"
 
 Threads = str(multiprocessing.cpu_count())
@@ -122,16 +129,16 @@ print 'Joining splits for:'
 # create Join.pbs scripts:
 for input_file in genome_join:
     Input_Filepath = os.path.join(output_folder, input_file)
-    
+
     print str(input_file) + ' ...started'
-    
+
     # join commands:
     COMMANDS_Join = [
     # JOIN WEVOTE TAXA OUTPUTS:
     "cat " + Input_Filepath + "*/*_WEVOTEOut.tsv" + " > " + Input_Filepath + "_WEVOTEOut.tsv",
 #    # RECLASSIFY TO FAMILY LEVEL DEPTH:
 #    Python + " " + Contrain_classification + " " + "family" + " " + Input_Filepath + "_WEVOTEOut.tsv" + " " + Nodes + " " + Names + " " + Input_Filepath + "_WEVOTEOut_family.tsv",
-#    # GENERATE HIERARCHICAL MULTI-LAYER PIE CHART OF FAMILY COMPOSITION:    
+#    # GENERATE HIERARCHICAL MULTI-LAYER PIE CHART OF FAMILY COMPOSITION:
 #    Kaiju2krona + " -t " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/nodes_nr.dmp" + " -n " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/names_nr.dmp" + " -i " + Input_Filepath + "_WEVOTEOut_family.tsv" + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.txt",
 #    "awk -F \'\\t\' \'{OFS=\"\\t\";$2=\"\";$3=\"\";print}\' " + Input_Filepath + "_WEVOTEOut_family_Krona.txt" + " > " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv",
 #    ktImportText + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.html" + " " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv",
@@ -143,7 +150,7 @@ for input_file in genome_join:
     ktImportText + " -o " + Input_Filepath + "_WEVOTEOut_species_Krona.html" + " " + Input_Filepath + "_WEVOTEOut_species_Krona.tsv",
     # JOIN ANNOTATED GENES/PROTEINS:
     "cat " + Input_Filepath + "*/*_gene_map.tsv" + " > " + Input_Filepath + "_gene_map.tsv",
-    # JOIN ANNOTATED ECs: 
+    # JOIN ANNOTATED ECs:
     "cat " + os.path.join(Input_Filepath + "*/*_EC_Annotation", "Output", "Consolidated", "*_proteins.ECs_All") + " > " + Input_Filepath + "_proteins.ECs_All",
     # CALCULATE RPKM & COMPILE INFO '_RPKM.tsv'= [geneID/proteinID, length, #reads, EC#, Total RPKM, RPKM per phylum]:
     # COMPILE EC NODE ATTRIBUTES FOR CYTOSCAPE '_Cytoscape.tsv'= [EC#, RPKM, RPKM per phylum]:

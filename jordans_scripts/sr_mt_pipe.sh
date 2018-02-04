@@ -15,7 +15,7 @@ module load gcc/5.2.0 boost/1.60.0-gcc5.2.0 intel/15.0.2 openmpi java blast extr
 
 INPUT_FOLDER=$SCRATCH/datasets/Ilott_2016/100Kin
 OUTPUT_FOLDER=$SCRATCH/datasets/Ilott_2016/100Kout
-PIPELINE_SCRIPT=$HOME/scripts/python/mt_pipe.py
+PIPELINE_SCRIPT=$HOME/parkinson_int_meta_pipe/jordans_scripts/python/mt_pipe.py
 
 START_POINT=Pre
 END_POINT=Annotate_BWA

@@ -56,24 +56,26 @@ Rfam = "/home/j/jparkins/mobolaji/Databases/Rfam_rRNA.cm"
 Filter_rRNA = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Filter.py"
 Reduplicate = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Reduplicate.py"
 #Map_reads_contigs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_contigs.py"
-Map_reads_contigs = "/home/j/jparkins/ang/scripts/python/map_read_contigs.py"
+Map_reads_contigs = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/map_read_contigs.py"
 Paired_Reads_Filter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Paired_Reads_Filter.py"
 #BLAT_Contaminant_Filter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/BLAT_Contaminant_Filter.py"
-BLAT_Contaminant_Filter = "/home/j/jparkins/ang/scripts/python/BLAT_contaminant_filter.py"
+BLAT_Contaminant_Filter = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/BLAT_contaminant_filter.py"
 #File_splitter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/File_splitter.py"
-File_splitter = "/home/j/jparkins/ang/scripts/python/file_splitter.py"
-Sort_Reads = "/home/j/jparkins/mobolaji/Read_Classification/Sort_Reads.py"
+File_splitter = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/file_splitter.py"
+Sort_Reads = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/mt_sortreads.py"
+# Sort_Reads = "/home/j/jparkins/mobolaji/Read_Classification/Sort_Reads.py"
 #rRNA_Split_Jobs = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/rRNA_Split_Jobs.py"
-rRNA_Split_Jobs = "/home/j/jparkins/ang/scripts/python/rRNA_isolate_split_jobs.py"
+rRNA_Split_Jobs = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/rRNA_split_jobs.py"
 #Map_reads_gene_BWA = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_gene_BWA.py"
-Map_reads_gene_BWA = "/home/j/jparkins/ang/scripts/python/map_read_gene_BWA.py"
+Map_reads_gene_BWA = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/map_read_gene_BWA.py"
 #Map_reads_gene_BLAT = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_gene_BLAT.py"
-Map_reads_gene_BLAT = "/home/j/jparkins/ang/scripts/python/map_read_gene_BLAT.py"
+Map_reads_gene_BLAT = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/map_read_gene_BLAT.py"
 #Map_reads_prot_DMND = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_prot_DMND.py"
-Map_reads_prot_DMND = "/home/j/jparkins/ang/scripts/python/map_read_prot_DMND.py"
+Map_reads_prot_DMND = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/map_read_prot_DMND.py"
 Spades = "/home/j/jparkins/mobolaji/Tools/SPAdes/SPAdes-3.9.1-Linux/bin/spades.py"
 EC_Annotation_Prep = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/0_Preprocess_Input.py"
-Detect_Submit = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/1-1a_Detect_Submission.py"
+#Detect_Submit = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/1-1a_Detect_Submission.py"
+Detect_Submit = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/detect_submission.py"
 EC_Annotation_Post = "/home/j/jparkins/mobolaji/EC_Prediction_Scripts/4a_EC_Consolidation.py"
 Detect = "/home/j/jparkins/mobolaji/Tools/UpdatedDETECT_V2.0/detect_leon.py"
 Priam = "/home/j/jparkins/mobolaji/Tools/PRIAM/PRIAM_search.jar"
@@ -98,8 +100,8 @@ RPKM = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/RPKM.py"
 TAXA_DNA_DB = "/scratch/j/jparkins/ang/databases/enterobacteriaceae_cds/enterobacteriaceae_cds.fna"
 TAXA_DNA_DB_Prefix = os.path.splitext(TAXA_DNA_DB)[0]
 TAXA_DNA_DB_Extension = os.path.splitext(TAXA_DNA_DB)[1]
-BLAT_Isolate_Filter = "/home/j/jparkins/ang/scripts/python/BLAT_isolate_filter.py"
-rRNA_Isolate_Split_Jobs = "/home/j/jparkins/ang/scripts/python/rRNA_isolate_split_jobs.py"
+BLAT_Isolate_Filter = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/BLAT_isolate_filter.py"
+rRNA_Isolate_Split_Jobs = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/rRNA_isolate_split_jobs.py"
 
 
 Threads = str(multiprocessing.cpu_count())
@@ -200,7 +202,7 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
         original = item
         base_name = os.path.splitext(os.path.basename(item))[0]
         print base_name
- 
+
         Input_File = os.path.join(output_folder, base_name, base_name + ".fastq")
         Input_Filepath = os.path.splitext(Input_File)[0]
         Input_File1 = Input_Filepath + "1"
@@ -221,8 +223,8 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
             os.symlink(original + "2.fastq", os.path.join(output_folder, base_name, base_name + "2.fastq"))
         except:
             pass
-       
-        # set quality according to sequencing method: 
+
+        # set quality according to sequencing method:
         try:
             # changed this to read split file:
             File_stats = subprocess.check_output([os.path.join(BBMap_Dir, "testformat.sh"), os.path.join(input_folder, genome_name, base_name + "1.fastq")])
@@ -233,8 +235,8 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
         else:
             Qual = "64"
         Length = File_stats.split("\t")[4].split("bp")[0]
-       
-        # define filenames: 
+
+        # define filenames:
         Host_Contaminants = Input_Filepath + "_host_contaminants_seq.fasta"
         Vector_Contaminants = Input_Filepath + "_vector_contaminants_seq.fasta"
         Contigs = os.path.join(Input_Path, os.path.splitext(Input_FName)[0] + "_SpadesOut", "contigs.fasta")
@@ -393,7 +395,7 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
                         PBS_script_out.write("\n".join(COMMANDS_rRNA))
                         break
                     PBS_script_out.write(line + "\n")
-            
+
             if startpoint > sp['Isolate']:
                 JobID_rRNA = subprocess.check_output(["qsub", os.path.splitext(Input_FName)[0] + "_rRNA_Submit.pbs"])
                 print "...started"
@@ -433,7 +435,7 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
             subprocess.call(["qalter", "-v", "JOB2=" + JobID_Combine.strip("\n").split(".")[0], JobID_rRNA.strip("\n")]) # what does this do?
 
         # **** Preprocessing: Contig Assembly
-        if startpoint <= sp['Assemble'] and endpoint >= sp['Assemble']: 
+        if startpoint <= sp['Assemble'] and endpoint >= sp['Assemble']:
 
             print "Assemble",
             COMMANDS_Assemble = [
@@ -452,11 +454,11 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
             # If no contigs are assembled, artifically make appropriate contig output files:
             "else",
             "   touch " + Contigs,
-            "   touch " + Input_Filepath + "_contig_map.tsv",            
+            "   touch " + Input_Filepath + "_contig_map.tsv",
             "   cp " + Input_File1 + "_all_mRNA.fastq" + " " + Input_File1 + "_all_mRNA_unmapped.fastq",
             "   cp " + Input_File2 + "_all_mRNA.fastq" + " " + Input_File2 + "_all_mRNA_unmapped.fastq",
             "   cp " + Input_Filepath + "_all_mRNA_unpaired.fastq" + " " + Input_Filepath + "_all_mRNA_unpaired_unmapped.fastq",
-            "fi" 
+            "fi"
             ]
 
             with open(os.path.splitext(Input_FName)[0] + "_Assemble.pbs", "w") as PBS_script_out:
@@ -770,7 +772,7 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
                         break
                     PBS_script_out.write(line + "\n")
 
-            if startpoint > sp['Annotate_BLAT_Post']: 
+            if startpoint > sp['Annotate_BLAT_Post']:
                 print "...started"
                 JobID_Annotate_Diamond4 = subprocess.check_output(["qsub", os.path.splitext(Input_FName)[0] + "_Annotate_DMD4.pbs"])
             else:
@@ -802,7 +804,7 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
             else:
                 print "...queued"
                 JobID_Annotate_Diamond_Post = subprocess.check_output(["qsub", os.path.splitext(Input_FName)[0] + "_Annotate_DMD_Postprocess.pbs", "-W", "depend=afterany:" + JobID_Annotate_Diamond1.strip("\n") + ":" + JobID_Annotate_Diamond2.strip("\n") + ":" + JobID_Annotate_Diamond3.strip("\n") + ":" + JobID_Annotate_Diamond4.strip("\n")])
-            
+
         # **** Taxinomic Classification
         if startpoint <= sp['Classify'] and endpoint >= sp['Classify']:
 
@@ -833,7 +835,7 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
             "awk -F \'\\t\' \'{print \"C\\t\"$1\"\\t\"$9}\' " + os.path.join(Input_Filepath + "_WEVOTEOut", os.path.splitext(Input_FName)[0] + "_WEVOTEOut_WEVOTE_Details.txt") + " > " + Input_Filepath + "_WEVOTEOut.tsv",
             # RECLASSIFY TO FAMILY LEVEL DEPTH:
             Python + " " + Contrain_classification + " " + "family" + " " + Input_Filepath + "_WEVOTEOut.tsv" + " " + Nodes + " " + Names + " " + Input_Filepath + "_WEVOTEOut_family.tsv",
-            # GENERATE HIERARCHICAL MULTI-LAYER PIE CHART OF FAMILY COMPOSITION:  
+            # GENERATE HIERARCHICAL MULTI-LAYER PIE CHART OF FAMILY COMPOSITION:
             Kaiju2krona + " -t " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/nodes_nr.dmp" + " -n " + "/scratch/j/jparkins/mobolaji/NCBI_nr_db/Index/names_nr.dmp" + " -i " + Input_Filepath + "_WEVOTEOut_family.tsv" + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.txt",
             "awk -F \'\\t\' \'{OFS=\"\\t\";$2=\"\";$3=\"\";print}\' " + Input_Filepath + "_WEVOTEOut_family_Krona.txt" + " > " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv",
             ktImportText + " -o " + Input_Filepath + "_WEVOTEOut_family_Krona.html" + " " + Input_Filepath + "_WEVOTEOut_family_Krona.tsv"
@@ -858,7 +860,7 @@ for genome_name in sorted(os.walk(input_folder).next()[1]):
             else:
                 print "...queued"
                 JobID_Classify = subprocess.check_output(["qsub", os.path.splitext(Input_FName)[0] + "_Classify.pbs", "-W", "depend=afterok:" + JobID_Annotate_Diamond_Post.strip("\n")])
-            
+
         # **** Prepare EC annotation files
         if startpoint <= sp['EC_Preprocess'] and endpoint >= sp['EC_Preprocess']:
 

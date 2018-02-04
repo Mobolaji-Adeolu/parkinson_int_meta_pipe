@@ -9,10 +9,12 @@ import os.path
 import subprocess
 import multiprocessing
 
-Python = "/home/j/jparkins/mobolaji/python"
+#Python = "/home/j/jparkins/mobolaji/python"
+Python = "/scinet/gpc/tools/Python/Python272-shared/bin/python"
 #File_splitter = "/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/File_splitter.py"
-File_splitter = "/home/j/jparkins/ang/scripts/python/file_splitter.py"
-Sort_Reads = "/home/j/jparkins/mobolaji/Read_Classification/Sort_Reads.py"
+File_splitter = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/file_splitter.py"
+# Sort_Reads = "/home/j/jparkins/mobolaji/Read_Classification/Sort_Reads.py"
+Sort_Reads = "/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/mt_sortreads.py"
 
 input_folder = sys.argv[1]
 splitreads = int(sys.argv[2])
