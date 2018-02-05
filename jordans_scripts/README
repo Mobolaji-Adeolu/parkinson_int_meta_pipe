@@ -1,4 +1,29 @@
-How to use Jordan's version of the pipeline. Everything can be run on SCINET from the /home/j/jparkins/ang/scripts folder. This folder is a copy of the jordan_scripts/ folder in the feature/jordan_logic_fix branch of the GitHub parkinson_int_meta_pipe repository. 
+How to use Jordan's version of the pipeline (for paired-end reads only).
+
+You should be able to run everyting on SCINET from the '/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/' directory, while in the 'feature/jordan_logic_fix' branch of the GitHub parkinson_int_meta_pipe repository.
+
+All custom python scripts can be found in the 'jordans_scripts/python/' directory. These scripts replace many of Mobolaji's original scripts, and bare the same name, except the new filenames are completely in lowercase. E.g.:
+
+'/home/j/jparkins/mobolaji/Metatranscriptome_Scripts/Mobolaji/Map_read_gene_BWA.py'
+
+becomes
+
+'/home/j/jparkins/ang/parkinson_int_meta_pipe/jordans_scripts/python/map_read_gene_BWA.py'.
 
 
-(1) Sort raw reads by editing and executing sr_mt_sortreads.sh. 
+
+(Step 1) Sort raw reads by editing and executing 'jordans_scripts/sr_mt_sortreads.sh'. This shell script executes the 'jordans_scripts/python/mt_sortreads.py' driver script. In 'mt_sortreads.py', the definition for the 'seq_id' variable must be changed according to the Sequence ID format in the .fasta files being sorted.
+
+
+(Step 2) Split each sorted read .fasta files into sub files containing 1 million reads. Do this by editing and executing 'jordans_scripts/sr_mt_splitfiles.sh'. In this shell script, you must specify the folder containing all the unsplit sorted .fasta files, as well as the number reads per split (e.g., 1 million). 
+
+The shell script will execute the 'jordans_scripts/python/mt_splitfiles.py' driver script, which in turn calls 'jordans_scripts/python/file_splitter.py' on each unsplit .fasta file. Note that 'mt_splitfiles.py' requires you to specify the 'splitreads_min' variable, which represents the MINIMUM number of reads in a .fasta splitfile. If the number of reads in an unsplit .fasta file is not divisible by the number of reads specified per split (e.g., 1 million), there will be left over reads. If the number of leftover reads is >= 'splitreads_min', they will be put into a separate .fasta splitfile. If the number of leftover reads is < 'splitreads_min', they will be tacked onto the last .fasta splitfile created (for which the number of reads will be <= 1 million + splitreads_min).
+
+
+(Step 3) Edit and execute the 'jordans_scripts/sr_mt_pipe.sh' to run the remainder of the pipeline via the 'jordans_scripts/python/mt_pipe.py' driver script. In the 'sr_mt_pipe.sh' shell script, the INPUT directory contains all the sorted and split .fasta files, and the OUTPUT directory will contain all the output files from running the remainder of the pipeline. 
+
+Furthermore, a START and END point within the pipeline can be specified in the 'sr_mt_pipe.sh' shell script. These points can be chosed for the list 
+
+'Pre', 'rRNA', ('Combine'), 'Assemble', 'Annotate_BWA', 'Annotate_BWA_Post', 'Annotate_BLAT', 'Annotate_BLAT_Post', 'Annotate_Diamond', 'Annotate_Diamond_Post', 'Classify', 'EC_Preprocess', 'Detect', ('Combine_Detect'), 'PRIAM', 'EC_Diamond', 'EC_Postprocess', 'Network'.
+
+Note that you cannot start or stop at the points 'Combine' or 'Combine_Detect' due to complications arising from qsub job dependencies.

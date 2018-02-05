@@ -8,6 +8,6 @@ module load gcc/5.2.0 boost/1.60.0-gcc5.2.0 intel/15.0.2 openmpi java blast extr
 
 INPUT_FOLDER=$SCRATCH/datasets/Ilott_2016/50Kin
 SPLIT_SCRIPT=$HOME/parkinson_int_meta_pipe/jordans_scripts/python/mt_splitfiles.py
-SPLIT_READS_NUM=50000
+SPLIT_READS_NUM=1000000
 
 python $SPLIT_SCRIPT $INPUT_FOLDER $SPLIT_READS_NUM
